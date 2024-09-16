@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FirstFragment">
+
+    <Button
+        android:id="@+id/button_first"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_blue" />
+
+    <Button
+        android:id="@+id/button_yellow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:backgroundTint="@color/dark_yellow"
+        android:textColor="@color/black"
+        android:onClick="colorButtonClick"
+        android:text="@string/yellow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/red"
+        android:backgroundTint="@color/red"
+        android:onClick="colorButtonClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_yellow" />
+
+    <Button
+        android:id="@+id/button_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/white"
+        android:backgroundTint="@color/white_beige"
+        android:textColor="@color/black"
+        android:onClick="colorButtonClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_red" />
+
+    <Button
+        android:id="@+id/button_green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/green"
+        android:backgroundTint="@color/green"
+        android:onClick="colorButtonClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_white" />
+
+    <Button
+        android:id="@+id/button_brown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/brown"
+        android:backgroundTint="@color/brown"
+        android:onClick="colorButtonClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_green" />
+
+    <Button
+        android:id="@+id/button_lilac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lilac"
+        android:backgroundTint="@color/lilac"
+        android:textColor="@color/black"
+        android:onClick="colorButtonClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_brown" />
+
+    <Button
+        android:id="@+id/button_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/blue"
+        android:backgroundTint="@color/blue"
+        android:onClick="colorButtonClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_lilac" />
+
+    <ImageView
+        android:id="@+id/castle1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="90dp"
+        android:background="@color/invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/castle2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle1" />
+
+    <ImageView
+        android:id="@+id/castle3"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle2" />
+
+    <ImageView
+        android:id="@+id/castle4"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle3" />
+
+    <ImageView
+        android:id="@+id/castle5"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle4" />
+
+    <ImageView
+        android:id="@+id/castle6"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle5" />
+
+    <ImageView
+        android:id="@+id/castle7"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle6" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SecondFragment">
+
+    <TextView
+        android:id="@+id/textview_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/castle_button1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="90dp"
+        android:background="@color/invisible"
+        android:onClick="onCastleClick"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/checkmark1"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@color/invisible"
+        android:src="@drawable/checkmark"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="@id/castle_button1"
+        app:layout_constraintEnd_toEndOf="@id/castle_button1"
+        app:layout_constraintStart_toStartOf="@id/castle_button1"
+        app:layout_constraintTop_toTopOf="@id/castle_button1" />
+
+    <ImageButton
+        android:id="@+id/castle_button2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        android:onClick="onCastleClick"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle_button1" />
+
+    <ImageButton
+        android:id="@+id/checkmark2"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@color/invisible"
+        android:src="@drawable/checkmark"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintTop_toTopOf="@id/castle_button2"
+        app:layout_constraintBottom_toBottomOf="@id/castle_button2"
+        app:layout_constraintStart_toStartOf="@id/castle_button2"
+        app:layout_constraintEnd_toEndOf="@id/castle_button2" />
+
+    <ImageButton
+        android:id="@+id/castle_button3"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        android:onClick="onCastleClick"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle_button2" />
+
+    <ImageButton
+        android:id="@+id/checkmark3"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@color/invisible"
+        android:src="@drawable/checkmark"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintTop_toTopOf="@id/castle_button3"
+        app:layout_constraintBottom_toBottomOf="@id/castle_button3"
+        app:layout_constraintStart_toStartOf="@id/castle_button3"
+        app:layout_constraintEnd_toEndOf="@id/castle_button3" />
+
+    <ImageButton
+        android:id="@+id/castle_button4"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        android:onClick="onCastleClick"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle_button3" />
+
+    <ImageButton
+        android:id="@+id/checkmark4"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@color/invisible"
+        android:src="@drawable/checkmark"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintTop_toTopOf="@id/castle_button4"
+        app:layout_constraintBottom_toBottomOf="@id/castle_button4"
+        app:layout_constraintStart_toStartOf="@id/castle_button4"
+        app:layout_constraintEnd_toEndOf="@id/castle_button4" />
+
+    <ImageButton
+        android:id="@+id/castle_button5"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        android:onClick="onCastleClick"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle_button4" />
+
+    <ImageButton
+        android:id="@+id/checkmark5"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@color/invisible"
+        android:src="@drawable/checkmark"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintTop_toTopOf="@id/castle_button5"
+        app:layout_constraintBottom_toBottomOf="@id/castle_button5"
+        app:layout_constraintStart_toStartOf="@id/castle_button5"
+        app:layout_constraintEnd_toEndOf="@id/castle_button5" />
+
+    <ImageButton
+        android:id="@+id/castle_button6"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        android:onClick="onCastleClick"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle_button5" />
+
+    <ImageButton
+        android:id="@+id/checkmark6"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@color/invisible"
+        android:src="@drawable/checkmark"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintTop_toTopOf="@id/castle_button6"
+        app:layout_constraintBottom_toBottomOf="@id/castle_button6"
+        app:layout_constraintStart_toStartOf="@id/castle_button6"
+        app:layout_constraintEnd_toEndOf="@id/castle_button6" />
+
+    <ImageButton
+        android:id="@+id/castle_button7"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        android:onClick="onCastleClick"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castle_button6" />
+
+    <ImageButton
+        android:id="@+id/checkmark7"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@color/invisible"
+        android:src="@drawable/checkmark"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintTop_toTopOf="@id/castle_button7"
+        app:layout_constraintBottom_toBottomOf="@id/castle_button7"
+        app:layout_constraintStart_toStartOf="@id/castle_button7"
+        app:layout_constraintEnd_toEndOf="@id/castle_button7" />
+
+    <TextView
+        android:id="@+id/scores"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:visibility="visible"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start"
+        android:onClick="onClickStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_castle"
+        >
+    <TextView
+        android:id="@+id/roomName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/pound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/pound"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/roomName"
+        app:layout_constraintTop_toTopOf="@+id/roomName" />
+
+    <TextView
+        android:id="@+id/roomNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/pound"
+        app:layout_constraintTop_toTopOf="@+id/roomName" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/room"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_layout" />
+
+    <EditText
+        android:id="@+id/number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ems="3"
+        android:inputType="number"
+        android:text="0"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/room" />
+
+    <ImageView
+        android:id="@+id/room_for_garden"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/number"
+        app:layout_constraintStart_toStartOf="@id/number"
+        app:layout_constraintBottom_toBottomOf="@id/number"
+        app:layout_constraintEnd_toEndOf="@id/number"/>
+
+    <Button
+        android:id="@+id/plusButton"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:text="@string/plus"
+        android:visibility="gone"
+        android:onClick="onPlusClick"
+        app:layout_constraintStart_toEndOf="@+id/number"
+        app:layout_constraintTop_toTopOf="@+id/number" />
+
+    <Button
+        android:id="@+id/minusButton"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:text="@string/minus"
+        android:visibility="gone"
+        android:onClick="onPlusClick"
+        app:layout_constraintEnd_toStartOf="@+id/number"
+        app:layout_constraintTop_toTopOf="@+id/number" />
+
+
+
+    <LinearLayout
+        android:id="@+id/prev_next_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/number"
+        >
+        <Button
+            android:id="@+id/previous_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/previous"
+            android:visibility="gone"
+            android:onClick="onNextRoomClick"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/next_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next"
+            android:visibility="gone"
+            android:onClick="onNextRoomClick"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/done_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        android:visibility="gone"
+        android:onClick="onDoneCountClick"
+        android:backgroundTint="@color/dark_yellow"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/prev_next_layout"/>
+
+    <ImageView
+        android:id="@+id/current_castle"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@color/invisible"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
