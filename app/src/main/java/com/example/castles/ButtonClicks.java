@@ -15,6 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * related to the game itself
+ */
 public class ButtonClicks {
 
     private static class RoomNumber {

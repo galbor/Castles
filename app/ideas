@@ -1,7 +1,10 @@
-start button that disappears
+Entering fragment:
+-> password and skip FirstFragment
+-> no password and go to FirstFragment
 
-room #k
-enter number
-(+-)?
+after FirstFragment:
+    get password
 
-next | prev
+
+
+add comments:

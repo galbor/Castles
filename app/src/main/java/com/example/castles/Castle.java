@@ -84,6 +84,9 @@ public class Castle {
         return rooms[room.ordinal()];
     }
 
+    /**
+     * generates the points matrix
+     */
     public void init_points(){
         for (int i = 0; i < points.length; ++i){
             if (i == ROOM.blue.ordinal() || i == ROOM.fountain.ordinal()) {
@@ -95,6 +98,7 @@ public class Castle {
                     points[i][j] = 0;
             }
         }
+        //pretending all gardens are yellow by default
         green_room_effects = new ROOM[rooms[ROOM.green.ordinal()]];
         for (int i = 0; i < green_room_effects.length; ++i){
             ROOM room = ROOM.values()[0];

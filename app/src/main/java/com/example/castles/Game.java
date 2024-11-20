@@ -37,6 +37,9 @@ public class Game {
     public Castle get_castle_from_pos(int i){
         return castles[i];
     }
+    public COLOR get_color_from_pos(int castle_pos){
+        return castle_order[castle_pos];
+    }
 
     public int get_castle_amt() {return castles.length;}
 
@@ -111,10 +114,6 @@ public class Game {
             if (readylevel != READYLEVEL.done) return false;
         }
         return true;
-    }
-
-    public COLOR get_color_from_pos(int castle_pos){
-        return castle_order[castle_pos];
     }
 
     public ROOM get_green_last_changed(int castle_pos, int index){
