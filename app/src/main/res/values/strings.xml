@@ -51,5 +51,5 @@
     <string name="create_online_room">Create room</string>
     <string name="join_online_room">Join room</string>
     <string name="password">Password</string>
-    <string name="wrong_password">wrong password</string>
+    <string name="wrong_password">Wrong password</string>
 </resources>

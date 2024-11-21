@@ -1,10 +1,5 @@
-Entering fragment:
--> password and skip FirstFragment
--> no password and go to FirstFragment
-
-after FirstFragment:
-    get password
+no to actually get the password from online
 
 
-
-add comments:
+bug:
+    when creating a room after joining a room, crashes

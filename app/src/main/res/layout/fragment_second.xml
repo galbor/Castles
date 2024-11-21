@@ -6,6 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".SecondFragment">
 
+    <LinearLayout
+        android:id="@+id/roomPasswordLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/password" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=": " />
+
+        <TextView
+            android:id="@+id/roomPasswordText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/textview_second"
         android:layout_width="wrap_content"

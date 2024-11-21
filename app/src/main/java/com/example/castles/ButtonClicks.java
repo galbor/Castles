@@ -32,18 +32,22 @@ public class ButtonClicks {
 
     private static List<Game.COLOR> castle_order = new LinkedList<>(); //need way to show castle_order
 
-    public static Game game;
+    public static Game game = null;
     public static int castle_pos;
     private static ROOM cur_room;
     private static int cur_room_number;
 
     private static ROOM cur_room_for_garden;
 
-
+    /**
+     * start game based on the chosen castle_order
+     */
     public static void startGame() {
-        Game.COLOR[] castles = new Game.COLOR[castle_order.size()];
-        castle_order.toArray(castles);
-        game = new Game(castles);
+        if (game == null) {
+            Game.COLOR[] castles = new Game.COLOR[castle_order.size()];
+            castle_order.toArray(castles);
+            game = new Game(castles);
+        }
         castle_pos = 0;
         cur_room_number = 0;
         cur_room = ROOM.yellow;
@@ -64,6 +68,10 @@ public class ButtonClicks {
         }
         if (castle_order.size() < Game.COLOR.values().length)
             activity.findViewById(icons[i]).setVisibility(View.INVISIBLE); //default color
+    }
+
+    public static void displayPassword(TextView textView){
+        textView.setText(OnlineRoom.GeneratePassword(game));
     }
 
     /**
@@ -114,6 +122,30 @@ public class ButtonClicks {
             b.setBackgroundColor(((Activity) b.getContext()).getColor(R.color.red));
             b.setText(R.string.too_little_castles_error); //find way to show error message
         }
+    }
+
+    public static void onJoinRoomClick(Button b){
+        EditText editText = ((Activity)b.getContext()).findViewById(R.id.enter_online_room_ID);
+        String password = editText.getText().toString();
+        game = OnlineRoom.GetGame(password);
+        if (game == null){
+            //error message
+            editText.setText("");
+            editText.setHint(R.string.wrong_password);
+        }
+        else{
+            //fragment 2 needs castle_order
+            castle_order.clear();
+            for (int i = 0; i < game.get_castle_amt(); i++)
+                castle_order.add(game.get_color_from_pos(i));
+
+            Navigation.findNavController(b).navigate(R.id.action_onlineFragment_to_secondFragment);
+        }
+    }
+
+
+    public static void onCreateRoomClick(Button b){
+        Navigation.findNavController(b).navigate(R.id.action_onlineFragment_to_firstFragment);
     }
 
 

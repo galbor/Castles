@@ -3,7 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/OnlineRoomFragment">
+
+    <fragment
+        android:id="@+id/OnlineRoomFragment"
+        android:name="com.example.castles.OnlineRoomFragment">
+        <action
+            android:id="@+id/action_onlineFragment_to_firstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_onlineFragment_to_secondFragment"
+            app:destination="@id/SecondFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/FirstFragment"
@@ -19,10 +30,5 @@
         android:id="@+id/SecondFragment"
         android:name="com.example.castles.SecondFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_second" />
 </navigation>

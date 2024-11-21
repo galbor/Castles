@@ -28,16 +28,27 @@ public class OnlineRoom {
      * @return null if the password doesn't correspond to a game. the game if it does
      */
     public static Game GetGame(String password){
+        Game.COLOR[] castle_order = VarifyPassword(password);
+        return castle_order != null ? new Game(castle_order) : null;
+    }
+
+
+    /**
+     * varifies password
+     * @param password
+     * @return the game's castle_order if the password is correct. otherwise null
+     */
+    private static Game.COLOR[] VarifyPassword(String password){
         Game.COLOR[] castle_order = new Game.COLOR[password.length()];
         Set<Integer> colors = new HashSet<>();
+        if (password.length() < 3 || password.length() > Game.COLOR.values().length) return null;
         for (int i = 0; i<password.length(); i++){
             int castle = password.charAt(i)-'0';
             if (castle < 0 || castle >= Game.COLOR.values().length) return null;
-            castle_order[i] = Game.COLOR.values()[i];
+            castle_order[i] = Game.COLOR.values()[castle];
             if (colors.contains(castle)) return null;
             colors.add(castle);
         }
-        return new Game(castle_order);
+        return castle_order;
     }
-
 }

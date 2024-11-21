@@ -55,6 +55,21 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 
+    //online fragment
+    fun createRoomClick(view: View){
+        ButtonClicks.onCreateRoomClick(view as Button);
+    }
+
+    //online fragment
+    fun joinRoomClick(view: View){
+        ButtonClicks.onJoinRoomClick(view as Button);
+    }
+
+
+    //fragment 1
+    fun nextPageClick(view: View){
+        ButtonClicks.onNextPageClick(view as Button);
+    }
 
     //fragment 1
     fun colorButtonClick(view: View){
@@ -63,14 +78,18 @@ class MainActivity : AppCompatActivity() {
 
     //fragment 2
     fun onClickStart(view : View) {
+        view.setVisibility(View.GONE);
+        ButtonClicks.startGame();
+
         ButtonClicks.updateIcons(
             view.getContext() as Activity, intArrayOf(
                 R.id.castle_button1, R.id.castle_button2, R.id.castle_button3,
                 R.id.castle_button4, R.id.castle_button5, R.id.castle_button6, R.id.castle_button7
             )
         )
-        view.setVisibility(View.GONE);
-        ButtonClicks.startGame();
+
+        ButtonClicks.displayPassword((view.context as Activity).findViewById(R.id.roomPasswordText));
+        ((view.context as Activity).findViewById(R.id.roomPasswordLayout) as View).visibility = View.VISIBLE;
     }
 
     //fragment 2
