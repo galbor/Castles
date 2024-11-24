@@ -8,12 +8,16 @@ public class Castle {
     private ROOM[] green_room_effects;
     public ROOM last_changed;
 
+    public READYLEVEL done_counting;
+
     public Castle(){
         rooms = new int[ROOM.values().length];
         points = new int[ROOM.values().length][];
         last_changed = ROOM.values()[0];
 
         rooms[ROOM.throne.ordinal()] = 1;
+
+        done_counting = READYLEVEL.unready;
     }
 
     public int sum(){

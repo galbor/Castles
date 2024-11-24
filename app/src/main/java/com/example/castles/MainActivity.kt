@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     //fragment 2
     fun onClickStart(view : View) {
         view.setVisibility(View.GONE);
-        ButtonClicks.startGame();
+        ButtonClicks.startGame(view);
 
         ButtonClicks.updateIcons(
             view.getContext() as Activity, intArrayOf(
