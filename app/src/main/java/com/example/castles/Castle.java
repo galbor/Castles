@@ -40,12 +40,12 @@ public class Castle {
     public Map<String, Object> ToMap(){
         Map<String, Object> res = new HashMap<>();
 
-        List<Integer> roomslist = new LinkedList<>();
+        List<Number> roomslist = new LinkedList<>();
         for (int room : rooms) roomslist.add(room);
         res.put("rooms", roomslist);
 
         for (int i = 0; i<points.length; i++){
-            List<Integer> pointslist = new LinkedList<>();
+            List<Number> pointslist = new LinkedList<>();
             for (int room : points[i]) pointslist.add(room);
             res.put("points" + i, pointslist);
         }
@@ -53,7 +53,7 @@ public class Castle {
         res.put("readylevel", done_counting.ordinal());
         res.put("last_changed", last_changed.ordinal());
 
-        List<Integer> green_effects = new LinkedList<>();
+        List<Number> green_effects = new LinkedList<>();
         for (int i = 0; i< green_effects.size(); i++){
             green_effects.add(green_room_effects[i].ordinal());
         }
@@ -68,27 +68,27 @@ public class Castle {
      */
     public static Castle FromMap(Map<String, Object> map){
         Castle res = new Castle();
-        List<Integer> roomslist = (List<Integer>) map.get("rooms");
+        List<Number> roomslist = (List<Number>) map.get("rooms");
 
         for (int i = 0; i<roomslist.size(); i++){
-            res.rooms[i] = roomslist.get(i);
+            res.rooms[i] = roomslist.get(i).intValue();
         }
 
 
         for (int i = 0; i<res.rooms.length; i++){
-            List<Integer> pointslist = (List<Integer>) map.get("points" + i);
+            List<Number> pointslist = (List<Number>) map.get("points" + i);
             res.points[i] = new int[pointslist.size()];
-            for (int j = 0; j<pointslist.size(); j++) res.points[i][j] = pointslist.get(j);
+            for (int j = 0; j<pointslist.size(); j++) res.points[i][j] = pointslist.get(j).intValue();
         }
 
 
         res.done_counting = READYLEVEL.values ()[(int) map.get("readylevel")];
         res.last_changed = ROOM.values()[(int) map.get("last_changed")];
 
-        List<Integer> green_effects = (List<Integer>) map.get("green_room_effects");
+        List<Number> green_effects = (List<Number>) map.get("green_room_effects");
         res.green_room_effects = new ROOM[green_effects.size()];
         for (int i = 0; i< green_effects.size(); i++){
-            res.green_room_effects[i] = ROOM.values()[green_effects.get(i)];
+            res.green_room_effects[i] = ROOM.values()[green_effects.get(i).intValue()];
         }
 
         return res;
