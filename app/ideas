@@ -8,4 +8,4 @@ bug:
 when to delete a game?
 I think when it's 24 hrs long
 
-TODO convert game, castle to map and back
+GetCastle() Only the original thread that created a view hierarchy can touch its views.

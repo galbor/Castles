@@ -3,6 +3,10 @@ package com.example.castles;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -13,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -41,6 +46,11 @@ public class OnlineRoom {
         public Is_Usable_Castle(Castle castle, boolean is_usable){
             this.is_usable = is_usable;
             SetCastle(castle);
+        }
+
+        public Is_Usable_Castle(Map<String, Object> map){
+            this.is_usable = (boolean)map.get("is_usable");
+            this.castle = (Map<String, Object>)map.get("castle");
         }
 
         public void SetCastle(Castle castle){
@@ -127,10 +137,10 @@ public class OnlineRoom {
      * @param action what to do if the castle is available and free
      */
     public static void GetCastle(int pos, int prevPos, Castle prev_castle ,Consumer<Castle> action){
-        DocumentReference docRef = db.document(CastleNameDB(pos));
+        DocumentReference docRef = db.document(password);
         fireStore.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(docRef);
-            Is_Usable_Castle iuCastle = (Is_Usable_Castle) snapshot.get(CastleNameDB(pos));
+            Is_Usable_Castle iuCastle = new Is_Usable_Castle((Map<String, Object>) snapshot.get(CastleNameDB(pos)));
 
             //updates the previous castle
             if (prevPos > -1) {
@@ -153,7 +163,8 @@ public class OnlineRoom {
             ShowCastlesUsability(snapshot);
 
             return null;
-        });
+        }).addOnSuccessListener(aVoid -> Log.d("success", "Transaction success getcastle!"))
+                .addOnFailureListener(e -> Log.w("fail", "Transaction failure getcastle.", e));
     }
 
     public static void UpdateCastle(int pos, Castle castle){

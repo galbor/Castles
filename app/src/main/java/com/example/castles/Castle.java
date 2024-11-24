@@ -82,8 +82,8 @@ public class Castle {
         }
 
 
-        res.done_counting = READYLEVEL.values ()[(int) map.get("readylevel")];
-        res.last_changed = ROOM.values()[(int) map.get("last_changed")];
+        res.done_counting = READYLEVEL.values ()[((Number) map.get("readylevel")).intValue()];
+        res.last_changed = ROOM.values()[((Number) map.get("last_changed")).intValue()];
 
         List<Number> green_effects = (List<Number>) map.get("green_room_effects");
         res.green_room_effects = new ROOM[green_effects.size()];
