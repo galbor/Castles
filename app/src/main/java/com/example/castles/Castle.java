@@ -1,6 +1,9 @@
 package com.example.castles;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class Castle {
     private int[] rooms;
@@ -12,10 +15,11 @@ public class Castle {
 
     public Castle(){
         rooms = new int[ROOM.values().length];
-        points = new int[ROOM.values().length][];
+        points = new int[ROOM.values().length][0];
         last_changed = ROOM.values()[0];
 
         rooms[ROOM.throne.ordinal()] = 1;
+        green_room_effects = new ROOM[0];
 
         done_counting = READYLEVEL.unready;
     }
@@ -29,6 +33,64 @@ public class Castle {
             }
 
         }
+        return res;
+    }
+
+    //bad usage of strings "magic values"
+    public Map<String, Object> ToMap(){
+        Map<String, Object> res = new HashMap<>();
+
+        List<Integer> roomslist = new LinkedList<>();
+        for (int room : rooms) roomslist.add(room);
+        res.put("rooms", roomslist);
+
+        for (int i = 0; i<points.length; i++){
+            List<Integer> pointslist = new LinkedList<>();
+            for (int room : points[i]) pointslist.add(room);
+            res.put("points" + i, pointslist);
+        }
+
+        res.put("readylevel", done_counting.ordinal());
+        res.put("last_changed", last_changed.ordinal());
+
+        List<Integer> green_effects = new LinkedList<>();
+        for (int i = 0; i< green_effects.size(); i++){
+            green_effects.add(green_room_effects[i].ordinal());
+        }
+        res.put("green_room_effects", green_effects);
+
+        return res;
+    }
+
+    /**
+     * @param map created with ToMap()
+     * @return castle that was created by ToMap()
+     */
+    public static Castle FromMap(Map<String, Object> map){
+        Castle res = new Castle();
+        List<Integer> roomslist = (List<Integer>) map.get("rooms");
+
+        for (int i = 0; i<roomslist.size(); i++){
+            res.rooms[i] = roomslist.get(i);
+        }
+
+
+        for (int i = 0; i<res.rooms.length; i++){
+            List<Integer> pointslist = (List<Integer>) map.get("points" + i);
+            res.points[i] = new int[pointslist.size()];
+            for (int j = 0; j<pointslist.size(); j++) res.points[i][j] = pointslist.get(j);
+        }
+
+
+        res.done_counting = READYLEVEL.values ()[(int) map.get("readylevel")];
+        res.last_changed = ROOM.values()[(int) map.get("last_changed")];
+
+        List<Integer> green_effects = (List<Integer>) map.get("green_room_effects");
+        res.green_room_effects = new ROOM[green_effects.size()];
+        for (int i = 0; i< green_effects.size(); i++){
+            res.green_room_effects[i] = ROOM.values()[green_effects.get(i)];
+        }
+
         return res;
     }
 

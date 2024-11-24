@@ -13,11 +13,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.castles.databinding.ActivityMainBinding
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private var joined_room : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +61,13 @@ class MainActivity : AppCompatActivity() {
     //online fragment
     fun createRoomClick(view: View){
         ButtonClicks.onCreateRoomClick(view as Button);
+        joined_room = false
     }
 
     //online fragment
     fun joinRoomClick(view: View){
         ButtonClicks.onJoinRoomClick(view as Button);
+        joined_room = true
     }
 
 
@@ -88,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        ButtonClicks.displayPassword((view.context as Activity).findViewById(R.id.roomPasswordText));
+        ButtonClicks.displayPassword((view.context as Activity).findViewById(R.id.roomPasswordText), !joined_room);
         ((view.context as Activity).findViewById(R.id.roomPasswordLayout) as View).visibility = View.VISIBLE;
     }
 

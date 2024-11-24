@@ -1,5 +1,10 @@
 package com.example.castles;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class Game {
     public enum COLOR {
         yellow(R.drawable.castle_yellow, R.string.yellow),
@@ -20,7 +25,7 @@ public class Game {
         int getStringId() {return this.stringId;}
     }
 
-    private final COLOR[] castle_order;
+    public final COLOR[] castle_order;
     private Castle[] castles;
 
     public Game(COLOR[] castle_order) {
@@ -29,6 +34,27 @@ public class Game {
         for (int i = 0; i< castle_order.length; ++i) {
             castles[i] = new Castle();
         }
+    }
+
+    /**
+     *
+     * @return castle_order as ordinals
+     */
+    public List<Number> CastleOrderOrdinals(){
+        List<Number> res = new LinkedList<>();
+        for (COLOR color : castle_order) {
+            res.add(color.ordinal());
+        }
+        return res;
+    }
+
+    public static COLOR[] CastleOrderFromOrdinals(List<Number> castle_order_ordinals){
+        COLOR[] castle_order = new COLOR[castle_order_ordinals.size()];
+        for (int i = 0; i< castle_order.length; i++){
+            COLOR x = COLOR.values()[castle_order_ordinals.get(i).intValue()];
+            castle_order[i] = x;
+        }
+        return castle_order;
     }
 
     public Castle get_castle(int castle_pos){

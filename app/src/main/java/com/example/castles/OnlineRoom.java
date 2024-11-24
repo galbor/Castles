@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -28,19 +29,30 @@ public class OnlineRoom {
 
     private static final CollectionReference db = fireStore.collection(COLLECTION_NAME);
 
-    private static String password;
+    private static String password = null;
 
     /**
      * a castle and a boolean denoting whether one is allowed to access it
      */
     public static class Is_Usable_Castle {
-        public Castle castle;
+        public Map<String, Object> castle;
         public boolean is_usable;
 
         public Is_Usable_Castle(Castle castle, boolean is_usable){
-            this.castle = castle; this.is_usable = is_usable;
+            this.is_usable = is_usable;
+            SetCastle(castle);
+        }
+
+        public void SetCastle(Castle castle){
+            this.castle = castle.ToMap();
+        }
+
+        public Castle GetCastle(){
+            return Castle.FromMap(this.castle);
         }
     }
+
+    public static String GetPassword() {return password;}
 
     /**
      * creates an online room, displays the password in textview
@@ -61,7 +73,7 @@ public class OnlineRoom {
 
 
         Map<String, Object> document = new HashMap<>();
-        document.put(GAME_WORD, game);
+        document.put(GAME_WORD, game.CastleOrderOrdinals());
         for (int i = 0; i<game.get_castle_amt(); i++){
             document.put(CastleNameDB(i), new Is_Usable_Castle(game.get_castle(i), true));
         }
@@ -98,7 +110,7 @@ public class OnlineRoom {
             }
             DocumentSnapshot document = task.getResult();
             if (document.exists()){
-                action.accept((Game)document.get(GAME_WORD));
+                action.accept(new Game(Game.CastleOrderFromOrdinals((List<Number>)document.get(GAME_WORD))));
                 password = pass;
                 return;
             }
@@ -125,16 +137,18 @@ public class OnlineRoom {
                 Is_Usable_Castle prevIuCastle = (Is_Usable_Castle) snapshot.get(CastleNameDB(prevPos));
                 assert prevIuCastle != null;
                 prevIuCastle.is_usable = true;
-                prevIuCastle.castle = prev_castle;
+                prevIuCastle.SetCastle(prev_castle);
                 transaction.update(docRef, CastleNameDB(prevPos), prevIuCastle);
             }
 
             assert iuCastle != null;
             if (!iuCastle.is_usable) return null;
-            iuCastle.is_usable = iuCastle.castle.done_counting == READYLEVEL.done; //should be a func?
+            Castle castle = iuCastle.GetCastle();
+
+            iuCastle.is_usable = castle.done_counting == READYLEVEL.done; //should be a func?
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
-            action.accept(iuCastle.castle);
+            action.accept(castle);
 
             ShowCastlesUsability(snapshot);
 
@@ -151,7 +165,7 @@ public class OnlineRoom {
             assert iuCastle != null;
 
             iuCastle.is_usable = castle.done_counting == READYLEVEL.done;
-            iuCastle.castle = castle;
+            iuCastle.SetCastle(castle);
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
 
@@ -191,7 +205,7 @@ public class OnlineRoom {
         Game game = (Game) snapshot.get(GAME_WORD);
         for (int i = 0; i<game.get_castle_amt(); i++){
             Is_Usable_Castle iuCastle = (Is_Usable_Castle) snapshot.get(CastleNameDB(i));
-            ButtonClicks.showCastleUsability(i, iuCastle.castle.done_counting == READYLEVEL.done, !iuCastle.is_usable);
+            ButtonClicks.showCastleUsability(i, iuCastle.GetCastle().done_counting == READYLEVEL.done, !iuCastle.is_usable);
         }
     }
 }

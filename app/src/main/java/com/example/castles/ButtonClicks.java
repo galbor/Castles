@@ -73,8 +73,11 @@ public class ButtonClicks {
             activity.findViewById(icons[i]).setVisibility(View.INVISIBLE); //default color
     }
 
-    public static void displayPassword(TextView textView){
-        OnlineRoom.CreateOnlineRoom(game, textView);
+    public static void displayPassword(TextView textView, boolean newroom){
+        if (newroom)
+            OnlineRoom.CreateOnlineRoom(game, textView);
+        else
+            textView.setText(OnlineRoom.GetPassword());
     }
 
     /**
@@ -120,6 +123,7 @@ public class ButtonClicks {
         final int MIN_CASTLES = 3;
 
         if (castle_order.size() >= MIN_CASTLES) {
+            game = null;
             Navigation.findNavController(b).navigate(R.id.action_FirstFragment_to_SecondFragment);
         } else {
             b.setBackgroundColor(((Activity) b.getContext()).getColor(R.color.red));
