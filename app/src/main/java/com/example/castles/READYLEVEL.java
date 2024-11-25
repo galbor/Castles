@@ -3,7 +3,7 @@ package com.example.castles;
 public enum READYLEVEL {
     unready(false, false),
     donecount(false, true),
-    done(true, true);
+    donescoring(true, true);
 
 
     private final boolean first;

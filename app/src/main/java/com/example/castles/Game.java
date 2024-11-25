@@ -1,9 +1,7 @@
 package com.example.castles;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Game {
     public enum COLOR {
@@ -57,41 +55,40 @@ public class Game {
         return castle_order;
     }
 
-    public Castle get_castle(int castle_pos){
+    public Castle GetCastle(int castle_pos){
         return castles[castle_pos];
     }
-    public void set_castle(int castle_pos, Castle castle) {castles[castle_pos] = castle;}
-    public COLOR get_color(int castle_pos){
+    public void SetCastle(int castle_pos, Castle castle) {castles[castle_pos] = castle;}
+    public COLOR GetColor(int castle_pos){
         return castle_order[castle_pos];
     }
 
-    public int get_castle_amt() {return castles.length;}
+    public int GetCastleAmt() {return castles.length;}
 
-    public void set_room_amt(int castle_pos, ROOM room, int amt) {
-        castles[castle_pos].set_room_amount(room, amt);
+    public void SetRoomAmt(int castle_pos, ROOM room, int amt) {
+        castles[castle_pos].SetRoomAmount(room, amt);
     }
 
-    public void set_room_amt(COLOR castle, ROOM room, int amt) {
-        set_room_amt(find_castle_pos(castle), room, amt);
+    public int GetRoomAmt(int castle_pos, ROOM room){
+        return castles[castle_pos].GetRoomAmount(room);
     }
 
-    public int get_room_amt(int castle_pos, ROOM room){
-        return castles[castle_pos].get_room_amount(room);
+    public void SetRoomPoints(int castle_pos, ROOM room, int index, int pts){
+        castles[castle_pos].SetRoomPoints(room, index, pts);
     }
 
-    public void set_room_pts(int castle_pos, ROOM room, int index, int pts){
-        castles[castle_pos].set_room_points(room, index, pts);
+    public void SetGardenRoomPoints(int castle_pos, int index, ROOM room){
+        castles[castle_pos].SetGardenPoints(index, room);
     }
 
-    public void set_garden_room_pts(int castle_pos, int index, ROOM room){
-        castles[castle_pos].set_garden_points(index, room);
+    public int GetRoomPoints(int castle_pos, ROOM room, int index){
+        return castles[castle_pos].GetRoomPoints(room, index);
     }
 
-    public int get_room_pts(int castle_pos, ROOM room, int index){
-        return castles[castle_pos].get_room_points(room, index);
-    }
-
-    public int[] find_winners() {
+    /**
+     * @return array of winning players
+     */
+    public int[] FindWinners() {
         int[] sums = new int[castles.length];
         int[] players_pts = new int[castles.length]; //a player has his and the next castle
         // points are min*20000 + max*20 + specialty rooms
@@ -99,13 +96,13 @@ public class Game {
         int[] players_with_max = new int[castles.length];
         int cnt_players_with_max = 0;
         for (int i = 0; i < sums.length; ++i) {
-            sums[i] = castles[i].sum();
+            sums[i] = castles[i].PointsSum();
         }
         for (int i = 0; i < players_pts.length; ++i) {
-            players_pts[i] = Math.min(sums[i], sums[next(i)]) * 20000
-                    + Math.max(sums[i], sums[next(i)]) * 20;
-            players_pts[i] += castles[i].count_specialties() +
-                    castles[next(i)].count_specialties();
+            players_pts[i] = Math.min(sums[i], sums[NextCastleIndex(i)]) * 20000
+                    + Math.max(sums[i], sums[NextCastleIndex(i)]) * 20;
+            players_pts[i] += castles[i].CountSpecialties() +
+                    castles[NextCastleIndex(i)].CountSpecialties();
             if (players_pts[i] > max_pts) max_pts = players_pts[i];
         }
         for (int i = 0; i < players_pts.length; ++i) {
@@ -114,51 +111,55 @@ public class Game {
             }
         }
 
-        return shorten_array(players_with_max, cnt_players_with_max);
+        return ShortenArray(players_with_max, cnt_players_with_max);
     }
 
-    public boolean is_done_counting(int castle_pos){
-        return castles[castle_pos].done_counting != READYLEVEL.unready;
+    public boolean IsDoneCounting(int castle_pos){
+        return castles[castle_pos].readylevel != READYLEVEL.unready;
     }
 
-    public void done_count(int castle_pos){
-        castles[castle_pos].init_points();
-        castles[castle_pos].done_counting = READYLEVEL.donecount;
+    /**
+     * sets the castle's ready level to donecount
+     */
+    public void DoneCount(int castle_pos){
+        castles[castle_pos].InitPoints();
+        castles[castle_pos].readylevel = READYLEVEL.donecount;
     }
 
-    public boolean is_done_points(int castle_pos){return castles[castle_pos].done_counting == READYLEVEL.done;}
+    public boolean IsDoneScoring(int castle_pos){return castles[castle_pos].readylevel == READYLEVEL.donescoring;}
 
-    public void done_points(int castle_pos){
-        // I think I forgot a line of code here lmao
-        castles[castle_pos].done_counting = READYLEVEL.done;
+    /**
+     * sets the castle's ready level to donescoring
+     */
+    public void DoneScoring(int castle_pos){
+        castles[castle_pos].readylevel = READYLEVEL.donescoring;
     }
 
-    public boolean all_castles_done(){
+    /**
+     * @return true iff all castle's have a donescoring ready level
+     */
+    public boolean AllCastlesDone(){
         for (Castle castle : castles){
-            if (castle.done_counting != READYLEVEL.done) return false;
+            if (castle.readylevel != READYLEVEL.donescoring) return false;
         }
         return true;
     }
 
-    public ROOM get_green_last_changed(int castle_pos, int index){
-        return castles[castle_pos].get_green_last_selected(index);
+    public ROOM GetGreenLastChanged(int castle_pos, int index){
+        return castles[castle_pos].GetGreenLastSelected(index);
     }
 
 
-    private int[] shorten_array(int[] arr, int len){
+    /**
+     * @return copy of arr with length len
+     */
+    private int[] ShortenArray(int[] arr, int len){
         int[] res = new int[len];
         System.arraycopy(arr, 0, res, 0, len);
         return res;
     }
-    private int next(int i) {
-        return (i + 1) % castles.length;
-    }
 
-    private int find_castle_pos(COLOR color) {
-        for (int i = 0; i < castle_order.length; ++i) {
-            if (castle_order[i] == color)
-                return i;
-        }
-        throw new IllegalArgumentException("no such color in this game " + color);
+    private int NextCastleIndex(int i) {
+        return (i + 1) % castles.length;
     }
 }

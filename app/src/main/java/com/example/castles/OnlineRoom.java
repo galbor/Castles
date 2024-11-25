@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -18,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -96,8 +91,8 @@ public class OnlineRoom {
 
         Map<String, Object> document = new HashMap<>();
         document.put(GAME_WORD, game.CastleOrderOrdinals());
-        for (int i = 0; i<game.get_castle_amt(); i++){
-            document.put(CastleNameDB(i), new Is_Usable_Castle(game.get_castle(i), true));
+        for (int i = 0; i<game.GetCastleAmt(); i++){
+            document.put(CastleNameDB(i), new Is_Usable_Castle(game.GetCastle(i), true));
         }
 
 
@@ -171,7 +166,7 @@ public class OnlineRoom {
 
             Castle castle = iuCastle.GetCastle();
 
-            iuCastle.is_usable = castle.done_counting == READYLEVEL.done; //should be a func?
+            iuCastle.is_usable = castle.readylevel == READYLEVEL.donescoring; //should be a func?
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
             action.accept(castle);
@@ -189,7 +184,7 @@ public class OnlineRoom {
 
             assert iuCastle != null;
 
-            iuCastle.is_usable = castle.done_counting == READYLEVEL.done;
+            iuCastle.is_usable = castle.readylevel == READYLEVEL.donescoring;
             iuCastle.SetCastle(castle);
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
@@ -231,9 +226,9 @@ public class OnlineRoom {
     public static void ShowCastlesUsability(DocumentSnapshot snapshot, Activity activity, int prev_castle){
         Game game = new Game(Game.CastleOrderFromOrdinals((List<Number>)snapshot.get(GAME_WORD)));
         activity.runOnUiThread(()->{
-        for (int i = 0; i<game.get_castle_amt(); i++){
+        for (int i = 0; i<game.GetCastleAmt(); i++){
             Is_Usable_Castle iuCastle = Is_Usable_Castle.FromSnapshot(snapshot, i);
-            ButtonClicks.showCastleUsability(i, iuCastle.GetCastle().done_counting == READYLEVEL.done, !iuCastle.is_usable && i != prev_castle, activity);
+            ButtonClicks.ShowCastleUsability(i, iuCastle.GetCastle().readylevel == READYLEVEL.donescoring, !iuCastle.is_usable && i != prev_castle, activity);
         }});
     }
 }

@@ -13,7 +13,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.castles.databinding.ActivityMainBinding
-import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,60 +59,60 @@ class MainActivity : AppCompatActivity() {
 
     //online fragment
     fun createRoomClick(view: View){
-        ButtonClicks.onCreateRoomClick(view as Button);
+        ButtonClicks.OnCreateRoomClick(view as Button);
         joined_room = false
     }
 
     //online fragment
     fun joinRoomClick(view: View){
-        ButtonClicks.onJoinRoomClick(view as Button);
+        ButtonClicks.OnJoinRoomClick(view as Button);
         joined_room = true
     }
 
 
     //fragment 1
     fun nextPageClick(view: View){
-        ButtonClicks.onNextPageClick(view as Button);
+        ButtonClicks.OnNextPageClick(view as Button);
     }
 
     //fragment 1
     fun colorButtonClick(view: View){
-        ButtonClicks.onColorClick(view as Button);
+        ButtonClicks.OnColorClick(view as Button);
     }
 
     //fragment 2
     fun onClickStart(view : View) {
         view.setVisibility(View.GONE);
-        ButtonClicks.startGame(view);
+        ButtonClicks.StartGame(view);
 
-        ButtonClicks.updateIcons(
+        ButtonClicks.UpdateIcons(
             view.getContext() as Activity, intArrayOf(
                 R.id.castle_button1, R.id.castle_button2, R.id.castle_button3,
                 R.id.castle_button4, R.id.castle_button5, R.id.castle_button6, R.id.castle_button7
             )
         )
 
-        ButtonClicks.displayPassword((view.context as Activity).findViewById(R.id.roomPasswordText), !joined_room);
+        ButtonClicks.DisplayPassword((view.context as Activity).findViewById(R.id.roomPasswordText), !joined_room);
         ((view.context as Activity).findViewById(R.id.roomPasswordLayout) as View).visibility = View.VISIBLE;
     }
 
     //fragment 2
     fun onCastleClick(view : View) {
-        ButtonClicks.onCastleImageClick(view as ImageButton);
+        ButtonClicks.OnCastleImageClick(view as ImageButton);
     }
 
     //fragment 2
     fun onPlusClick(view: View){
-        ButtonClicks.onPlusClick(view as Button);
+        ButtonClicks.OnPlusClick(view as Button);
     }
 
     //fragment 2
     fun onNextRoomClick(view: View){
-        ButtonClicks.onNextRoomClick(view as Button);
+        ButtonClicks.OnNextRoomClick(view as Button);
     }
 
     //fragment 2
     fun onDoneCountClick(view: View){
-        ButtonClicks.onDoneClick(view as Button);
+        ButtonClicks.OnDoneClick(view as Button);
     }
 }
