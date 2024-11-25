@@ -42,13 +42,13 @@ public class ButtonClicks {
     /**
      * start game based on the chosen castle_order
      */
-    public static void startGame() {
+    public static void startGame(View view) {
         if (game == null) {
             Game.COLOR[] castles = new Game.COLOR[castle_order.size()];
             castle_order.toArray(castles);
             game = new Game(castles);
         }
-        castle_pos = 0;
+        castle_pos = -1;
         cur_room_number = 0;
         cur_room = ROOM.yellow;
     }
@@ -70,8 +70,11 @@ public class ButtonClicks {
             activity.findViewById(icons[i]).setVisibility(View.INVISIBLE); //default color
     }
 
-    public static void displayPassword(TextView textView){
-        textView.setText(OnlineRoom.GeneratePassword(game));
+    public static void displayPassword(TextView textView, boolean newroom){
+        if (newroom)
+            OnlineRoom.CreateOnlineRoom(game, textView);
+        else
+            textView.setText(OnlineRoom.GetPassword());
     }
 
     /**
@@ -117,6 +120,7 @@ public class ButtonClicks {
         final int MIN_CASTLES = 3;
 
         if (castle_order.size() >= MIN_CASTLES) {
+            game = null;
             Navigation.findNavController(b).navigate(R.id.action_FirstFragment_to_SecondFragment);
         } else {
             b.setBackgroundColor(((Activity) b.getContext()).getColor(R.color.red));
@@ -127,20 +131,22 @@ public class ButtonClicks {
     public static void onJoinRoomClick(Button b){
         EditText editText = ((Activity)b.getContext()).findViewById(R.id.enter_online_room_ID);
         String password = editText.getText().toString();
-        game = OnlineRoom.GetGame(password);
-        if (game == null){
-            //error message
-            editText.setText("");
-            editText.setHint(R.string.wrong_password);
-        }
-        else{
-            //fragment 2 needs castle_order
-            castle_order.clear();
-            for (int i = 0; i < game.get_castle_amt(); i++)
-                castle_order.add(game.get_color_from_pos(i));
+        OnlineRoom.GetGame(password, gameVar -> {
+            if (gameVar == null){
+                //error message
+                editText.setText("");
+                editText.setHint(R.string.wrong_password);
+            }
+            else{
+                game = gameVar;
+                //fragment 2 needs castle_order
+                castle_order.clear();
+                for (int i = 0; i < game.get_castle_amt(); i++)
+                    castle_order.add(game.get_color(i));
 
-            Navigation.findNavController(b).navigate(R.id.action_onlineFragment_to_secondFragment);
-        }
+                Navigation.findNavController(b).navigate(R.id.action_onlineFragment_to_secondFragment);
+            }
+        });
     }
 
 
@@ -156,57 +162,69 @@ public class ButtonClicks {
         //check which castle clicks this and turn everything visible
         Activity activity = (Activity) b.getContext();
 
+        int prev_castle_pos = castle_pos;
+        Castle prev_castle = castle_pos >= 0 ? game.get_castle(castle_pos) : null;
+        int new_castle_pos;
+
         switch (b.getId()) {
             case R.id.castle_button2:
-                castle_pos = 1;
+                new_castle_pos = 1;
                 break;
             case R.id.castle_button3:
-                castle_pos = 2;
+                new_castle_pos = 2;
                 break;
             case R.id.castle_button4:
-                castle_pos = 3;
+                new_castle_pos = 3;
                 break;
             case R.id.castle_button5:
-                castle_pos = 4;
+                new_castle_pos = 4;
                 break;
             case R.id.castle_button6:
-                castle_pos = 5;
+                new_castle_pos = 5;
                 break;
             case R.id.castle_button7:
-                castle_pos = 6;
+                new_castle_pos = 6;
                 break;
             default:
-                castle_pos = 0;
+                new_castle_pos = 0;
                 break;
         }
         cur_room_number = 0;
 
-        int views_to_reveal[] = new int[]{R.id.number, R.id.plusButton, R.id.minusButton,
-                R.id.next_room, R.id.previous_room, R.id.done_count, R.id.room, R.id.roomNumber, R.id.pound};
+        OnlineRoom.GetCastle(new_castle_pos, prev_castle_pos, prev_castle, activity , castle -> {
+            int views_to_reveal[] = new int[]{R.id.number, R.id.plusButton, R.id.minusButton,
+                    R.id.next_room, R.id.previous_room, R.id.done_count, R.id.room, R.id.roomNumber, R.id.pound};
 
-        if (game.is_done_points(castle_pos)) {
-            set_visibility(activity, views_to_reveal, View.GONE);
-            set_castle_score(activity, castle_pos);
-        } else {
-            cur_room = game.get_castle_from_pos(castle_pos).last_changed;
-            set_visibility(activity, views_to_reveal, View.VISIBLE);
-            set_room_icon(activity);
-            set_room_amt(activity);
-            if (!game.is_done_counting(castle_pos)) {
-                set_visibility(activity, new int[]{R.id.pound, R.id.roomNumber}, View.GONE);
+            castle_pos = new_castle_pos;
+
+            game.set_castle(castle_pos, castle);
+
+            activity.runOnUiThread(()->{
+            if (castle.done_counting == READYLEVEL.done) {
+                set_visibility(activity, views_to_reveal, View.GONE);
+                set_castle_score(activity, castle_pos);
             } else {
-                doneCountReveal(activity);
+                cur_room = castle.last_changed;
+                set_visibility(activity, views_to_reveal, View.VISIBLE);
+                set_room_icon(activity);
+                set_room_amt(activity);
+                if (castle.done_counting == READYLEVEL.unready) {
+                    set_visibility(activity, new int[]{R.id.pound, R.id.roomNumber}, View.GONE);
+                } else {
+                    doneCountReveal(activity);
+                }
             }
-        }
 
-        ((ImageView) activity.findViewById(R.id.current_castle)).
-                setImageResource(castle_order.get(castle_pos).getDrawableId());
+            ((ImageView) activity.findViewById(R.id.current_castle)).
+                    setImageResource(castle_order.get(castle_pos).getDrawableId());
+            });
+        });
     }
 
     public static void onCastleImageClick(android.widget.ImageButton b) {
         Activity activity = (Activity) b.getContext();
         if (activity.findViewById(R.id.number).getVisibility() == View.VISIBLE) {
-            game.get_castle_from_pos(castle_pos).last_changed = cur_room;
+            game.get_castle(castle_pos).last_changed = cur_room;
             save_room_amt(activity);
         }
         startCastleRoomCount(b);
@@ -242,7 +260,7 @@ public class ButtonClicks {
             set_room_number(activity);
         }
         set_room_amt(activity);
-        game.get_castle_from_pos(castle_pos).last_changed = cur_room;
+        game.get_castle(castle_pos).last_changed = cur_room;
         set_room_icon(activity);
     }
 
@@ -257,7 +275,7 @@ public class ButtonClicks {
             set_visibility(activity, new int[]{R.id.number, R.id.plusButton, R.id.minusButton,
                     R.id.next_room, R.id.previous_room, R.id.done_count, R.id.room,
                     R.id.roomNumber, R.id.pound, R.id.room_for_garden}, View.GONE);
-            turn_on_checkmark(activity, castle_pos);
+            turn_on_checkmark(castle_pos, R.drawable.checkmark, true, activity);
             set_castle_score(activity, castle_pos);
             display_score(activity);
             if (game.all_castles_done())
@@ -266,10 +284,25 @@ public class ButtonClicks {
                 display_winners(activity, winners);
             }
         }
+        OnlineRoom.UpdateCastle(castle_pos, game.get_castle(castle_pos), activity);
     }
 
+    /**
+     * if castle is done scoring, show a checkmark. else if it's occupied, show an occupied sign
+     */
+    public static void showCastleUsability(int castle_pos, boolean done_scoring, boolean occupied, Activity activity){
+        int drawable = 0;
+        if (done_scoring){
+            drawable = R.drawable.checkmark;
+        } else if (occupied){
+            drawable =  R.drawable.occupied;
+        }
+        turn_on_checkmark(castle_pos, drawable, done_scoring || occupied, activity);
+    }
+
+
     private static void doneCountReveal(Activity activity) {
-        cur_room = firstRoom(game.get_castle_from_pos(castle_pos));
+        cur_room = firstRoom(game.get_castle(castle_pos));
         cur_room_number = 0;
         set_visibility(activity, new int[]{R.id.pound, R.id.roomNumber}, View.VISIBLE);
         set_room_icon(activity);
@@ -338,7 +371,7 @@ public class ButtonClicks {
     }
 
     private static void set_castle_score(Activity activity, int castle_pos) {
-        ((TextView) activity.findViewById(R.id.roomName)).setText(activity.getText(R.string.score) + ": " + game.get_castle_from_pos(castle_pos).sum());
+        ((TextView) activity.findViewById(R.id.roomName)).setText(activity.getText(R.string.score) + ": " + game.get_castle(castle_pos).sum());
     }
 
     private static void display_winners(Activity activity, int[] winners){
@@ -406,11 +439,11 @@ public class ButtonClicks {
         return new RoomNumber(res_room, res_num);
     }
 
-    private static void turn_on_checkmark(Activity activity, int castle_pos) {
+    private static void turn_on_checkmark(int castle_pos, int drawable, boolean visible, Activity activity) {
         int[] checkmarks = {R.id.checkmark1, R.id.checkmark2, R.id.checkmark3, R.id.checkmark4, R.id.checkmark5, R.id.checkmark6, R.id.checkmark7};
         ImageView checkmarkview = activity.findViewById(checkmarks[castle_pos]);
-        checkmarkview.setVisibility(View.VISIBLE);
-        checkmarkview.setImageResource(R.drawable.checkmark);
+        checkmarkview.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        checkmarkview.setImageResource(drawable);
     }
 
     private static void set_visibility(Activity activity, int[] view_ids, int visibility) {
@@ -425,10 +458,10 @@ public class ButtonClicks {
         for (int i = 0; i < game.get_castle_amt(); ++i) {
             res.append(activity.getString(R.string.castle));
             res.append(" ");
-            res.append(activity.getString(game.get_color_from_pos(i).getStringId()));
+            res.append(activity.getString(game.get_color(i).getStringId()));
             res.append(": ");
             if (game.is_done_points(i))
-                res.append(game.get_castle_from_pos(i).sum());
+                res.append(game.get_castle(i).sum());
             res.append("\n");
         }
 

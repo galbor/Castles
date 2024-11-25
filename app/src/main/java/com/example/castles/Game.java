@@ -1,5 +1,10 @@
 package com.example.castles;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class Game {
     public enum COLOR {
         yellow(R.drawable.castle_yellow, R.string.yellow),
@@ -20,24 +25,43 @@ public class Game {
         int getStringId() {return this.stringId;}
     }
 
-    private final COLOR[] castle_order;
+    public final COLOR[] castle_order;
     private Castle[] castles;
-    private READYLEVEL[] done_counting;
 
     public Game(COLOR[] castle_order) {
         this.castle_order = castle_order;
         castles = new Castle[castle_order.length];
-        done_counting = new READYLEVEL[castle_order.length];
         for (int i = 0; i< castle_order.length; ++i) {
             castles[i] = new Castle();
-            done_counting[i] = READYLEVEL.unready;
         }
     }
 
-    public Castle get_castle_from_pos(int i){
-        return castles[i];
+    /**
+     *
+     * @return castle_order as ordinals
+     */
+    public List<Number> CastleOrderOrdinals(){
+        List<Number> res = new LinkedList<>();
+        for (COLOR color : castle_order) {
+            res.add(color.ordinal());
+        }
+        return res;
     }
-    public COLOR get_color_from_pos(int castle_pos){
+
+    public static COLOR[] CastleOrderFromOrdinals(List<Number> castle_order_ordinals){
+        COLOR[] castle_order = new COLOR[castle_order_ordinals.size()];
+        for (int i = 0; i< castle_order.length; i++){
+            COLOR x = COLOR.values()[castle_order_ordinals.get(i).intValue()];
+            castle_order[i] = x;
+        }
+        return castle_order;
+    }
+
+    public Castle get_castle(int castle_pos){
+        return castles[castle_pos];
+    }
+    public void set_castle(int castle_pos, Castle castle) {castles[castle_pos] = castle;}
+    public COLOR get_color(int castle_pos){
         return castle_order[castle_pos];
     }
 
@@ -94,24 +118,24 @@ public class Game {
     }
 
     public boolean is_done_counting(int castle_pos){
-        return done_counting[castle_pos] != READYLEVEL.unready;
+        return castles[castle_pos].done_counting != READYLEVEL.unready;
     }
 
     public void done_count(int castle_pos){
         castles[castle_pos].init_points();
-        done_counting[castle_pos] = READYLEVEL.donecount;
+        castles[castle_pos].done_counting = READYLEVEL.donecount;
     }
 
-    public boolean is_done_points(int castle_pos){return done_counting[castle_pos] == READYLEVEL.done;}
+    public boolean is_done_points(int castle_pos){return castles[castle_pos].done_counting == READYLEVEL.done;}
 
     public void done_points(int castle_pos){
         // I think I forgot a line of code here lmao
-        done_counting[castle_pos] = READYLEVEL.done;
+        castles[castle_pos].done_counting = READYLEVEL.done;
     }
 
     public boolean all_castles_done(){
-        for (READYLEVEL readylevel : done_counting){
-            if (readylevel != READYLEVEL.done) return false;
+        for (Castle castle : castles){
+            if (castle.done_counting != READYLEVEL.done) return false;
         }
         return true;
     }
