@@ -39,8 +39,6 @@ public class ButtonClicks {
 
     private static ROOM cur_room_for_garden;
 
-    private static Activity fragment2_activity;
-
     /**
      * start game based on the chosen castle_order
      */
@@ -53,7 +51,6 @@ public class ButtonClicks {
         castle_pos = -1;
         cur_room_number = 0;
         cur_room = ROOM.yellow;
-        fragment2_activity = (Activity) view.getContext();
     }
 
     /**
@@ -167,38 +164,42 @@ public class ButtonClicks {
 
         int prev_castle_pos = castle_pos;
         Castle prev_castle = castle_pos >= 0 ? game.get_castle(castle_pos) : null;
+        int new_castle_pos;
 
         switch (b.getId()) {
             case R.id.castle_button2:
-                castle_pos = 1;
+                new_castle_pos = 1;
                 break;
             case R.id.castle_button3:
-                castle_pos = 2;
+                new_castle_pos = 2;
                 break;
             case R.id.castle_button4:
-                castle_pos = 3;
+                new_castle_pos = 3;
                 break;
             case R.id.castle_button5:
-                castle_pos = 4;
+                new_castle_pos = 4;
                 break;
             case R.id.castle_button6:
-                castle_pos = 5;
+                new_castle_pos = 5;
                 break;
             case R.id.castle_button7:
-                castle_pos = 6;
+                new_castle_pos = 6;
                 break;
             default:
-                castle_pos = 0;
+                new_castle_pos = 0;
                 break;
         }
         cur_room_number = 0;
 
-        OnlineRoom.GetCastle(castle_pos, prev_castle_pos, prev_castle , castle -> {
+        OnlineRoom.GetCastle(new_castle_pos, prev_castle_pos, prev_castle, activity , castle -> {
             int views_to_reveal[] = new int[]{R.id.number, R.id.plusButton, R.id.minusButton,
                     R.id.next_room, R.id.previous_room, R.id.done_count, R.id.room, R.id.roomNumber, R.id.pound};
 
+            castle_pos = new_castle_pos;
+
             game.set_castle(castle_pos, castle);
 
+            activity.runOnUiThread(()->{
             if (castle.done_counting == READYLEVEL.done) {
                 set_visibility(activity, views_to_reveal, View.GONE);
                 set_castle_score(activity, castle_pos);
@@ -216,6 +217,7 @@ public class ButtonClicks {
 
             ((ImageView) activity.findViewById(R.id.current_castle)).
                     setImageResource(castle_order.get(castle_pos).getDrawableId());
+            });
         });
     }
 
@@ -273,7 +275,7 @@ public class ButtonClicks {
             set_visibility(activity, new int[]{R.id.number, R.id.plusButton, R.id.minusButton,
                     R.id.next_room, R.id.previous_room, R.id.done_count, R.id.room,
                     R.id.roomNumber, R.id.pound, R.id.room_for_garden}, View.GONE);
-            turn_on_checkmark(castle_pos, R.drawable.checkmark, true);
+            turn_on_checkmark(castle_pos, R.drawable.checkmark, true, activity);
             set_castle_score(activity, castle_pos);
             display_score(activity);
             if (game.all_castles_done())
@@ -282,20 +284,20 @@ public class ButtonClicks {
                 display_winners(activity, winners);
             }
         }
-        OnlineRoom.UpdateCastle(castle_pos, game.get_castle(castle_pos));
+        OnlineRoom.UpdateCastle(castle_pos, game.get_castle(castle_pos), activity);
     }
 
     /**
      * if castle is done scoring, show a checkmark. else if it's occupied, show an occupied sign
      */
-    public static void showCastleUsability(int castle_pos, boolean done_scoring, boolean occupied){
+    public static void showCastleUsability(int castle_pos, boolean done_scoring, boolean occupied, Activity activity){
         int drawable = 0;
         if (done_scoring){
             drawable = R.drawable.checkmark;
         } else if (occupied){
             drawable =  R.drawable.occupied;
         }
-        turn_on_checkmark(castle_pos, drawable, done_scoring || occupied);
+        turn_on_checkmark(castle_pos, drawable, done_scoring || occupied, activity);
     }
 
 
@@ -437,9 +439,9 @@ public class ButtonClicks {
         return new RoomNumber(res_room, res_num);
     }
 
-    private static void turn_on_checkmark(int castle_pos, int drawable, boolean visible) {
+    private static void turn_on_checkmark(int castle_pos, int drawable, boolean visible, Activity activity) {
         int[] checkmarks = {R.id.checkmark1, R.id.checkmark2, R.id.checkmark3, R.id.checkmark4, R.id.checkmark5, R.id.checkmark6, R.id.checkmark7};
-        ImageView checkmarkview = fragment2_activity.findViewById(checkmarks[castle_pos]);
+        ImageView checkmarkview = activity.findViewById(checkmarks[castle_pos]);
         checkmarkview.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         checkmarkview.setImageResource(drawable);
     }

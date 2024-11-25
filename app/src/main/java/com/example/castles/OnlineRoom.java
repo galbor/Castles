@@ -1,5 +1,6 @@
 package com.example.castles;
 
+import android.app.Activity;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -48,7 +49,18 @@ public class OnlineRoom {
             SetCastle(castle);
         }
 
-        public Is_Usable_Castle(Map<String, Object> map){
+        /**
+         * factory method
+         * @param snapshot that was uploaded using CreateOnlineRoom
+         * @param castle_pos the number of the castle to pull
+         * @return
+         */
+        public static Is_Usable_Castle FromSnapshot(DocumentSnapshot snapshot, int castle_pos){
+            Map<String, Object> map = (Map<String, Object>) snapshot.get(CastleNameDB(castle_pos));
+            return new Is_Usable_Castle(map);
+        }
+
+        private Is_Usable_Castle(Map<String, Object> map){
             this.is_usable = (boolean)map.get("is_usable");
             this.castle = (Map<String, Object>)map.get("castle");
         }
@@ -108,8 +120,8 @@ public class OnlineRoom {
 
     /**
      * get the game from the database
-     * @param pass
-     * @param action what to do when gets the game. the parameter might be null
+     * @param pass the password
+     * @param action what to do when gets the game. the parameter will be null if the password is wrong
      */
     public static void GetGame(String pass, Consumer<Game> action){
 
@@ -124,6 +136,7 @@ public class OnlineRoom {
                 password = pass;
                 return;
             }
+            //if the password is wrong
             action.accept(null);
         });
     }
@@ -136,23 +149,23 @@ public class OnlineRoom {
      * @param prevPos previously viewed castle (can be -1 if there is none)
      * @param action what to do if the castle is available and free
      */
-    public static void GetCastle(int pos, int prevPos, Castle prev_castle ,Consumer<Castle> action){
+    public static void GetCastle(int pos, int prevPos, Castle prev_castle, Activity activity, Consumer<Castle> action){
         DocumentReference docRef = db.document(password);
         fireStore.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(docRef);
-            Is_Usable_Castle iuCastle = new Is_Usable_Castle((Map<String, Object>) snapshot.get(CastleNameDB(pos)));
+            Is_Usable_Castle iuCastle = Is_Usable_Castle.FromSnapshot(snapshot, pos);
+
+            assert iuCastle != null;
+            if (!iuCastle.is_usable) return null;
 
             //updates the previous castle
             if (prevPos > -1) {
-                Is_Usable_Castle prevIuCastle = (Is_Usable_Castle) snapshot.get(CastleNameDB(prevPos));
-                assert prevIuCastle != null;
+                Is_Usable_Castle prevIuCastle = Is_Usable_Castle.FromSnapshot(snapshot, prevPos);
                 prevIuCastle.is_usable = true;
                 prevIuCastle.SetCastle(prev_castle);
                 transaction.update(docRef, CastleNameDB(prevPos), prevIuCastle);
             }
 
-            assert iuCastle != null;
-            if (!iuCastle.is_usable) return null;
             Castle castle = iuCastle.GetCastle();
 
             iuCastle.is_usable = castle.done_counting == READYLEVEL.done; //should be a func?
@@ -160,18 +173,18 @@ public class OnlineRoom {
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
             action.accept(castle);
 
-            ShowCastlesUsability(snapshot);
+            ShowCastlesUsability(snapshot, activity, prevPos);
 
             return null;
-        }).addOnSuccessListener(aVoid -> Log.d("success", "Transaction success getcastle!"))
-                .addOnFailureListener(e -> Log.w("fail", "Transaction failure getcastle.", e));
+        }).addOnSuccessListener(aVoid -> Log.d("success", "Transaction success GetCastle!"))
+                .addOnFailureListener(e -> Log.w("fail", "Transaction failure GetCastle.", e));
     }
 
-    public static void UpdateCastle(int pos, Castle castle){
-        DocumentReference docRef = db.document(CastleNameDB(pos));
+    public static void UpdateCastle(int pos, Castle castle, Activity activity){
+        DocumentReference docRef = db.document(password);
         fireStore.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(docRef);
-            Is_Usable_Castle iuCastle = (Is_Usable_Castle) snapshot.get(CastleNameDB(pos));
+            Is_Usable_Castle iuCastle = Is_Usable_Castle.FromSnapshot(snapshot, pos);
 
             assert iuCastle != null;
 
@@ -180,10 +193,11 @@ public class OnlineRoom {
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
 
-            ShowCastlesUsability(snapshot);
+            ShowCastlesUsability(snapshot, activity, -1);
 
             return null;
-        });
+        }).addOnSuccessListener(aVoid -> Log.d("success", "Transaction success UpdateCastle!"))
+                .addOnFailureListener(e -> Log.w("fail", "Transaction failure UpdateCastle.", e));;
     }
 
 
@@ -211,12 +225,14 @@ public class OnlineRoom {
 
     /**
      * updates all castles' usability and done-ness (with the checkmark or occupied icons
+     * @param prev_castle the pos of the previous castle. it is always considered usable
      */
-    private static void ShowCastlesUsability(DocumentSnapshot snapshot){
-        Game game = (Game) snapshot.get(GAME_WORD);
+    public static void ShowCastlesUsability(DocumentSnapshot snapshot, Activity activity, int prev_castle){
+        Game game = new Game(Game.CastleOrderFromOrdinals((List<Number>)snapshot.get(GAME_WORD)));
+        activity.runOnUiThread(()->{
         for (int i = 0; i<game.get_castle_amt(); i++){
-            Is_Usable_Castle iuCastle = (Is_Usable_Castle) snapshot.get(CastleNameDB(i));
-            ButtonClicks.showCastleUsability(i, iuCastle.GetCastle().done_counting == READYLEVEL.done, !iuCastle.is_usable);
-        }
+            Is_Usable_Castle iuCastle = Is_Usable_Castle.FromSnapshot(snapshot, i);
+            ButtonClicks.showCastleUsability(i, iuCastle.GetCastle().done_counting == READYLEVEL.done, !iuCastle.is_usable && i != prev_castle, activity);
+        }});
     }
 }
