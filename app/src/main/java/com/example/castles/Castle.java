@@ -54,7 +54,7 @@ public class Castle {
         res.put("last_changed", last_changed.ordinal());
 
         List<Number> green_effects = new LinkedList<>();
-        for (int i = 0; i< green_effects.size(); i++){
+        for (int i = 0; i< green_room_effects.length; i++){
             green_effects.add(green_room_effects[i].ordinal());
         }
         res.put("green_room_effects", green_effects);

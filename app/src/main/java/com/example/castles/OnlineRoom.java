@@ -156,6 +156,9 @@ public class OnlineRoom {
             Is_Usable_Castle iuCastle = Is_Usable_Castle.FromSnapshot(snapshot, pos);
 
             assert iuCastle != null;
+
+            ShowCastlesUsability(snapshot, activity, prevPos);
+
             if (!iuCastle.is_usable) return null;
 
             //updates the previous castle
@@ -172,8 +175,6 @@ public class OnlineRoom {
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
             action.accept(castle);
-
-            ShowCastlesUsability(snapshot, activity, prevPos);
 
             return null;
         }).addOnSuccessListener(aVoid -> Log.d("success", "Transaction success GetCastle!"))
@@ -193,7 +194,7 @@ public class OnlineRoom {
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
 
-            ShowCastlesUsability(snapshot, activity, -1);
+            ShowCastlesUsability(snapshot, activity, pos);
 
             return null;
         }).addOnSuccessListener(aVoid -> Log.d("success", "Transaction success UpdateCastle!"))
