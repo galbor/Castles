@@ -249,15 +249,6 @@ public class OnlineRoom {
     }
 
     /**
-     *
-     * @param pos
-     * @return the name of the castle's document in the db
-     */
-    private static String CastleNameDB(int pos){
-        return CASTLE_WORD + pos;
-    }
-
-    /**
      * updates all castles' usability and done-ness (with the checkmark or occupied icons
      * @param prev_castle_pos the pos of the previous castle. it is always considered usable
      * @param prev_castle the previous castle. the castle in the snapshow isn't updated
@@ -267,7 +258,22 @@ public class OnlineRoom {
         activity.runOnUiThread(()->{
         for (int i = 0; i<game.GetCastleAmt(); i++){
             Is_Usable_Castle iuCastle = i == prev_castle_pos ? prev_castle : Is_Usable_Castle.FromSnapshot(snapshot, i);
-            ButtonClicks.ShowCastleUsability(i, iuCastle.GetCastle().readylevel == READYLEVEL.donescoring, !iuCastle.IsUsable() && i != prev_castle_pos, activity);
+            Castle castle = iuCastle.GetCastle();
+            ButtonClicks.ShowCastleUsability(i, castle.readylevel == READYLEVEL.donescoring, !iuCastle.IsUsable() && i != prev_castle_pos, activity);
+            if (castle.readylevel == READYLEVEL.donescoring)
+                ButtonClicks.SetCastle(i, castle);
+
+            ButtonClicks.DisplayScore(activity);
         }});
+    }
+
+
+    /**
+     *
+     * @param pos
+     * @return the name of the castle's document in the db
+     */
+    private static String CastleNameDB(int pos){
+        return CASTLE_WORD + pos;
     }
 }

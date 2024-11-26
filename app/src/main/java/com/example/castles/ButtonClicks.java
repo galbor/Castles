@@ -226,7 +226,7 @@ public class ButtonClicks {
 
             castle_pos = new_castle_pos;
 
-            game.SetCastle(castle_pos, castle);
+            SetCastle(castle_pos, castle);
 
             activity.runOnUiThread(()->{
             if (castle.readylevel == READYLEVEL.donescoring) {
@@ -262,8 +262,6 @@ public class ButtonClicks {
         }
         StartCastleRoomCount(b);
         DisplayScore(activity);
-        if (game.AllCastlesDone())
-            DisplayWinners(activity, game.FindWinners());
     }
 
     /**
@@ -330,10 +328,18 @@ public class ButtonClicks {
         int drawable = 0;
         if (done_scoring){
             drawable = R.drawable.checkmark;
-        } else if (occupied){
+        } else if (occupied && castle_pos != ButtonClicks.castle_pos){
             drawable =  R.drawable.occupied;
         }
         TurnOnCheckMark(castle_pos, drawable, done_scoring || occupied, activity);
+    }
+
+    /**
+     * @param pos the specific castle to set
+     * @param castle the new castle to put in the place
+     */
+    public static void SetCastle(int pos, Castle castle){
+        game.SetCastle(pos, castle);
     }
 
 
@@ -487,7 +493,7 @@ public class ButtonClicks {
         }
     }
 
-    private static void DisplayScore(Activity activity) {
+    public static void DisplayScore(Activity activity) {
         TextView score_text = activity.findViewById(R.id.scores);
         StringBuilder res = new StringBuilder("");
         for (int i = 0; i < game.GetCastleAmt(); ++i) {
@@ -501,6 +507,9 @@ public class ButtonClicks {
         }
 
         score_text.setText(res.toString());
+
+        if (game.AllCastlesDone())
+            DisplayWinners(activity, game.FindWinners());
     }
 
     private static void SwitchNumberForGarden(Activity activity) {
