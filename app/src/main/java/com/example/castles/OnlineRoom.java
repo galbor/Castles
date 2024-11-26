@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -36,11 +37,14 @@ public class OnlineRoom {
      * a castle and a boolean denoting whether one is allowed to access it
      */
     public static class Is_Usable_Castle {
-        public Map<String, Object> castle;
-        public boolean is_usable;
 
-        public Is_Usable_Castle(Castle castle, boolean is_usable){
-            this.is_usable = is_usable;
+        public static final int millis_between_updates = 3000;
+        public static final int seconds_until_usable = 10;
+        public Map<String, Object> castle;
+        public Number last_used;
+
+        public Is_Usable_Castle(Castle castle){
+            UpdateTime();
             SetCastle(castle);
         }
 
@@ -48,15 +52,15 @@ public class OnlineRoom {
          * factory method
          * @param snapshot that was uploaded using CreateOnlineRoom
          * @param castle_pos the number of the castle to pull
-         * @return
          */
         public static Is_Usable_Castle FromSnapshot(DocumentSnapshot snapshot, int castle_pos){
             Map<String, Object> map = (Map<String, Object>) snapshot.get(CastleNameDB(castle_pos));
+            if (map == null) return null;
             return new Is_Usable_Castle(map);
         }
 
         private Is_Usable_Castle(Map<String, Object> map){
-            this.is_usable = (boolean)map.get("is_usable");
+            this.last_used = (Number)map.get("last_used");
             this.castle = (Map<String, Object>)map.get("castle");
         }
 
@@ -66,6 +70,40 @@ public class OnlineRoom {
 
         public Castle GetCastle(){
             return Castle.FromMap(this.castle);
+        }
+
+        /**
+         * sets last_used to now
+         */
+        public void UpdateTime(){
+            this.last_used = Now();
+        }
+
+        private Number Now(){
+            return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        }
+
+        public boolean IsUsable(){
+            return Now().longValue() - last_used.longValue() >= seconds_until_usable;
+        }
+
+        /**
+         * sets the castle to be usable
+         * @return this
+         */
+        public Is_Usable_Castle MakeUsable(){
+            this.last_used = 0;
+            return this;
+        }
+
+        /**
+         * if donescoring make it usable, otherwise update time
+         */
+        public void UpdateUsability(){
+            if (GetCastle().readylevel == READYLEVEL.donescoring)
+                MakeUsable();
+            else
+                UpdateTime();
         }
     }
 
@@ -92,7 +130,7 @@ public class OnlineRoom {
         Map<String, Object> document = new HashMap<>();
         document.put(GAME_WORD, game.CastleOrderOrdinals());
         for (int i = 0; i<game.GetCastleAmt(); i++){
-            document.put(CastleNameDB(i), new Is_Usable_Castle(game.GetCastle(i), true));
+            document.put(CastleNameDB(i), new Is_Usable_Castle(game.GetCastle(i)).MakeUsable());
         }
 
 
@@ -152,21 +190,21 @@ public class OnlineRoom {
 
             assert iuCastle != null;
 
-            ShowCastlesUsability(snapshot, activity, prevPos);
+            ShowCastlesUsability(snapshot, activity, prevPos, Is_Usable_Castle.FromSnapshot(snapshot, prevPos));
 
-            if (!iuCastle.is_usable) return null;
+            if (!iuCastle.IsUsable()) return null;
 
             //updates the previous castle
             if (prevPos > -1) {
                 Is_Usable_Castle prevIuCastle = Is_Usable_Castle.FromSnapshot(snapshot, prevPos);
-                prevIuCastle.is_usable = true;
+                prevIuCastle.MakeUsable();
                 prevIuCastle.SetCastle(prev_castle);
                 transaction.update(docRef, CastleNameDB(prevPos), prevIuCastle);
             }
 
             Castle castle = iuCastle.GetCastle();
 
-            iuCastle.is_usable = castle.readylevel == READYLEVEL.donescoring; //should be a func?
+            iuCastle.UpdateUsability();
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
             action.accept(castle);
@@ -184,12 +222,12 @@ public class OnlineRoom {
 
             assert iuCastle != null;
 
-            iuCastle.is_usable = castle.readylevel == READYLEVEL.donescoring;
             iuCastle.SetCastle(castle);
+            iuCastle.UpdateUsability();
 
             transaction.update(docRef, CastleNameDB(pos), iuCastle);
 
-            ShowCastlesUsability(snapshot, activity, pos);
+            ShowCastlesUsability(snapshot, activity, pos, iuCastle);
 
             return null;
         }).addOnSuccessListener(aVoid -> Log.d("success", "Transaction success UpdateCastle!"))
@@ -221,14 +259,15 @@ public class OnlineRoom {
 
     /**
      * updates all castles' usability and done-ness (with the checkmark or occupied icons
-     * @param prev_castle the pos of the previous castle. it is always considered usable
+     * @param prev_castle_pos the pos of the previous castle. it is always considered usable
+     * @param prev_castle the previous castle. the castle in the snapshow isn't updated
      */
-    public static void ShowCastlesUsability(DocumentSnapshot snapshot, Activity activity, int prev_castle){
+    public static void ShowCastlesUsability(DocumentSnapshot snapshot, Activity activity, int prev_castle_pos, Is_Usable_Castle prev_castle){
         Game game = new Game(Game.CastleOrderFromOrdinals((List<Number>)snapshot.get(GAME_WORD)));
         activity.runOnUiThread(()->{
         for (int i = 0; i<game.GetCastleAmt(); i++){
-            Is_Usable_Castle iuCastle = Is_Usable_Castle.FromSnapshot(snapshot, i);
-            ButtonClicks.ShowCastleUsability(i, iuCastle.GetCastle().readylevel == READYLEVEL.donescoring, !iuCastle.is_usable && i != prev_castle, activity);
+            Is_Usable_Castle iuCastle = i == prev_castle_pos ? prev_castle : Is_Usable_Castle.FromSnapshot(snapshot, i);
+            ButtonClicks.ShowCastleUsability(i, iuCastle.GetCastle().readylevel == READYLEVEL.donescoring, !iuCastle.IsUsable() && i != prev_castle_pos, activity);
         }});
     }
 }

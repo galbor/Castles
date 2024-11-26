@@ -39,6 +39,35 @@ public class ButtonClicks {
 
     private static ROOM cur_room_for_garden;
 
+    private static boolean game_over = false;
+
+    private static UpdateTimeThread t;
+
+
+    private static class UpdateTimeThread extends Thread{
+
+        private Activity activity;
+        private boolean running = true;
+
+        public UpdateTimeThread(Activity activity){
+            this.activity = activity;
+        }
+        public void run(){
+            while (running){
+                OnlineRoom.UpdateCastle(castle_pos, game.GetCastle(castle_pos), activity);
+                try {
+                    Thread.sleep(OnlineRoom.Is_Usable_Castle.millis_between_updates);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void kill(){running = false;}
+    }
+
+
+
     /**
      * start game based on the chosen castle_order
      */
@@ -218,6 +247,10 @@ public class ButtonClicks {
             ((ImageView) activity.findViewById(R.id.current_castle)).
                     setImageResource(castle_order.get(castle_pos).getDrawableId());
             });
+
+            if (t != null) t.kill();
+            t = new UpdateTimeThread(activity);
+            t.start();
         });
     }
 
@@ -228,6 +261,9 @@ public class ButtonClicks {
             SaveRoomAmt(activity);
         }
         StartCastleRoomCount(b);
+        DisplayScore(activity);
+        if (game.AllCastlesDone())
+            DisplayWinners(activity, game.FindWinners());
     }
 
     /**
@@ -371,7 +407,8 @@ public class ButtonClicks {
     }
 
     private static void DisplayCastleScore(Activity activity, int castle_pos) {
-        ((TextView) activity.findViewById(R.id.roomName)).setText(activity.getText(R.string.score) + ": " + game.GetCastle(castle_pos).PointsSum());
+        if (!game_over)
+            ((TextView) activity.findViewById(R.id.roomName)).setText(activity.getText(R.string.score) + ": " + game.GetCastle(castle_pos).PointsSum());
     }
 
     private static void DisplayWinners(Activity activity, int[] winners){
@@ -388,6 +425,7 @@ public class ButtonClicks {
         }
         view.setText(res.toString());
         view.setTextSize(32);
+        game_over = true;
     }
 
     private static ROOM NextRoom(ROOM room, int distance) {

@@ -5,5 +5,4 @@ bug:
 when to delete a game?
 I think when it's 24 hrs long
 
-always show winner
-update your castle's checkmark icon when pressing done
+doesn't show other castle's score if not clicking it
