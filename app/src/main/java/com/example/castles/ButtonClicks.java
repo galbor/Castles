@@ -249,8 +249,10 @@ public class ButtonClicks {
             });
 
             if (t != null) t.kill();
-            t = new UpdateTimeThread(activity);
-            t.start();
+            if (!game.AllCastlesDone()) {
+                t = new UpdateTimeThread(activity);
+                t.start();
+            }
         });
     }
 
