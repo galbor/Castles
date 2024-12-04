@@ -4,6 +4,7 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Which castles are there?</string>
     <string name="second_fragment_label">Set Castles</string>
+    <string name="online_room_fragment_label">Choose Room</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 

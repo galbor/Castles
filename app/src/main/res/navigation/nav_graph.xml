@@ -7,7 +7,8 @@
 
     <fragment
         android:id="@+id/OnlineRoomFragment"
-        android:name="com.example.castles.OnlineRoomFragment">
+        android:name="com.example.castles.OnlineRoomFragment"
+        android:label="@string/online_room_fragment_label">
         <action
             android:id="@+id/action_onlineFragment_to_firstFragment"
             app:destination="@id/FirstFragment" />
@@ -26,6 +27,7 @@
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.castles.SecondFragment"
